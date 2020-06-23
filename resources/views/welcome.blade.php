@@ -8,11 +8,12 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #fff;
+                background-color: #e8e6df;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
@@ -21,18 +22,9 @@
             }
 
             .full-height {
-                height: 100vh;
+                height: 10vh;
             }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
+        
 
             .top-right {
                 position: absolute;
@@ -40,27 +32,15 @@
                 top: 18px;
             }
 
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
             .links > a {
                 color: #636b6f;
                 padding: 0 25px;
-                font-size: 13px;
+                font-size: 16px;
                 font-weight: 600;
                 letter-spacing: .1rem;
                 text-decoration: none;
-                text-transform: uppercase;
             }
 
-            .m-b-md {
-                margin-bottom: 30px;
-            }
         </style>
     </head>
     <body>
@@ -68,7 +48,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}">Upload New Images</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
 
@@ -78,23 +58,41 @@
                     @endauth
                 </div>
             @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
+        </div>
+        <div class="container">
+            @include('common.success')
+            <div class="row">
+                @foreach($images as $image)
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12"><br/>
+                    <div class="card mb-3">
+                        <img src="{{$image->image}}" class="card-img-top" alt="broken" height="400">
+                        @if(Auth::check())
+                        @if($image->user_id == Auth::user() -> id)
+                        <div class="card-body">
+                            <form action="{{route('images.destroy', $image->id)}}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                        @endif
+                        @endif
+                    </div> 
                 </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+                @endforeach
+            </div>
+            <div class="row justify-content-center">
+                {{$images->links()}}
             </div>
         </div>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     </body>
 </html>
